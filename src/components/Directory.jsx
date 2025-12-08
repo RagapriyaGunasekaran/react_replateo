@@ -28,7 +28,7 @@ export default function Directory() {
           {/* REUSABLE CARD COMPONENT STYLE */}
           {[
             {
-              img: "https://images.unsplash.com/photo-1526779259212-94c1d0b5a8d2",
+              img: "https://i.ibb.co/8D9F3L14/24721219-6896001.jpg",
               title: "Community Food Bank",
               text: "Accepts edible surplus food and distributes to shelters & child-care centers.",
               action: "Contact",
@@ -36,7 +36,7 @@ export default function Directory() {
               color: "orange",
             },
             {
-              img: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2",
+              img: "https://i.ibb.co/hRhnYrLb/assortment-compost-made-rotten-food-with-copy-space.jpg",
               title: "GreenCycle Composters",
               text: "Transforms non-edible food waste into compost and bio-organic fertilizer.",
               action: "Request Pickup",
@@ -44,7 +44,7 @@ export default function Directory() {
               color: "emerald",
             },
             {
-              img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+              img: "https://i.ibb.co/n8rjK4kF/Idyllic-farm-sunset-with-red-barn-tractor-and-freerange-chickens-Premium-AI-generated-image.jpg",
               title: "AgroFarm Collective",
               text: "Works with farmers to recycle food byproducts into soil boosters.",
               action: "Send Request",
