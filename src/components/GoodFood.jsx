@@ -2,69 +2,109 @@ import { HandHeart, Tag, UploadCloud } from "lucide-react";
 
 export default function GoodFood({ openDonationModal, openSaleModal }) {
   return (
-    <section className="page-section">
+    <section className="page-section relative">
+
+      {/* ORANGE GRADIENT BACKGROUND */}
+      <div className="absolute inset-0 -z-10 bg-white" />
 
       <div className="page-container">
 
         {/* HEADER */}
         <div className="text-center mb-14">
-          <h2 className="text-4xl font-extrabold text-gray-900">
-            Manage Surplus Edible Food
+          <h2 className="text-5xl font-extrabold text-orange-800 drop-shadow-sm">
+            Manage Edible Surplus Food
           </h2>
-          <p className="text-lg text-gray-600 mt-3">
-            Donate, sell, or list edible food items safely and responsibly.
+          <p className="text-lg text-orange-700 mt-3 max-w-2xl mx-auto">
+            Donate, sell, or share surplus edible food safely and responsibly using our community-driven platform.
           </p>
         </div>
 
         {/* ACTION CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
 
-          {/* DONATION CARD */}
-          <div className="bg-white p-8 rounded-2xl shadow-lg border-t-4 border-orange-500 text-center hover:shadow-xl transition">
-            <HandHeart className="w-12 h-12 text-orange-600 mx-auto mb-6" />
+          {/* DONATE CARD */}
+          <div
+            className="
+              relative p-10 rounded-3xl 
+              bg-gradient-to-br from-white/40 to-white/20 
+              backdrop-blur-xl border border-white/30 
+              shadow-xl shadow-orange-300/30 
+              hover:shadow-orange-400/40 hover:scale-[1.02]
+              transition-all
+            "
+          >
+            <div className="absolute -top-6 left-6 bg-orange-600 text-white p-4 rounded-2xl shadow-lg shadow-orange-500/40">
+              <HandHeart className="w-10 h-10" />
+            </div>
 
-            <h3 className="card-heading mb-3">Donate Food</h3>
-            <p className="text-gray-600 mb-6">
-              Give good-quality surplus food to verified NGOs.
+            <h3 className="text-2xl font-bold text-orange-800 mt-6">Donate Surplus Food</h3>
+            <p className="text-orange-700 mt-3">
+              Share high-quality edible food with NGOs and needy communities.
             </p>
 
             <button
               onClick={openDonationModal}
-              className="bg-orange-600 text-white py-3 px-8 rounded-lg hover:bg-orange-700 transition"
+              className="mt-6 bg-orange-600 text-white py-3 px-8 rounded-xl hover:bg-orange-700
+                         shadow-md hover:shadow-lg transition"
             >
               Start Donation
             </button>
           </div>
 
           {/* SALE CARD */}
-          <div className="bg-white p-8 rounded-2xl shadow-lg border-t-4 border-orange-500 text-center hover:shadow-xl transition">
-            <Tag className="w-12 h-12 text-orange-600 mx-auto mb-6" />
+          <div
+            className="
+              relative p-10 rounded-3xl 
+              bg-gradient-to-br from-white/40 to-white/20 
+              backdrop-blur-xl border border-white/30 
+              shadow-xl shadow-orange-300/30 
+              hover:shadow-orange-400/40 hover:scale-[1.02]
+              transition-all
+            "
+          >
+            <div className="absolute -top-6 left-6 bg-orange-600 text-white p-4 rounded-2xl shadow-lg shadow-orange-500/40">
+              <Tag className="w-10 h-10" />
+            </div>
 
-            <h3 className="card-heading mb-3">Discounted Sale</h3>
-            <p className="text-gray-600 mb-6">
-              Sell surplus edible food items at reduced prices.
+            <h3 className="text-2xl font-bold text-orange-800 mt-6">Sell at Discounted Price</h3>
+            <p className="text-orange-700 mt-3">
+              Sell excess edible food at an affordable price point.
             </p>
 
             <button
               onClick={openSaleModal}
-              className="bg-orange-600 text-white py-3 px-8 rounded-lg hover:bg-orange-700 transition"
+              className="mt-6 bg-orange-600 text-white py-3 px-8 rounded-xl hover:bg-orange-700
+                         shadow-md hover:shadow-lg transition"
             >
               List for Sale
             </button>
           </div>
 
-          {/* VIEW LISTINGS */}
-          <div className="bg-white p-8 rounded-2xl shadow-lg border-t-4 border-orange-500 text-center hover:shadow-xl transition">
-            <UploadCloud className="w-12 h-12 text-orange-600 mx-auto mb-6" />
+          {/* VIEW LISTINGS CARD */}
+          <div
+            className="
+              relative p-10 rounded-3xl 
+              bg-gradient-to-br from-white/40 to-white/20 
+              backdrop-blur-xl border border-white/30 
+              shadow-xl shadow-orange-300/30 
+              hover:shadow-orange-400/40 hover:scale-[1.02]
+              transition-all
+            "
+          >
+            <div className="absolute -top-6 left-6 bg-orange-600 text-white p-4 rounded-2xl shadow-lg shadow-orange-500/40">
+              <UploadCloud className="w-10 h-10" />
+            </div>
 
-            <h3 className="card-heading mb-3">View Listings</h3>
-            <p className="text-gray-600 mb-6">
-              Browse all available donations and sale listings.
+            <h3 className="text-2xl font-bold text-orange-800 mt-6">Explore Public Listings</h3>
+            <p className="text-orange-700 mt-3">
+              View all available donations and discounted items posted by others.
             </p>
 
             <a
               href="/listings"
-              className="bg-gray-300 text-gray-700 py-3 px-8 rounded-lg hover:bg-gray-400 transition"
+              className="mt-6 inline-block bg-white/40 backdrop-blur-xl border border-white/30 
+                         text-orange-800 py-3 px-8 rounded-xl hover:bg-white/60 
+                         shadow-md hover:shadow-lg transition"
             >
               View Listings
             </a>
@@ -73,7 +113,6 @@ export default function GoodFood({ openDonationModal, openSaleModal }) {
         </div>
 
       </div>
-
     </section>
   );
 }

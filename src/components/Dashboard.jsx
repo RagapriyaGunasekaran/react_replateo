@@ -1,4 +1,3 @@
-// src/components/Dashboard.jsx
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
@@ -22,17 +21,22 @@ export default function Dashboard({ openAuthModal }) {
   const [listings, setListings] = useState([]);
   const [stats, setStats] = useState({ donations: 0, sales: 0, pending: 0 });
 
-  // If not logged in, show prompt
+  // If user is not logged in
   if (!user) {
     return (
-      <section className="page-section">
+      <section className="page-section relative">
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200" />
+
         <div className="page-container flex justify-center">
-          <div className="bg-white p-10 rounded-2xl shadow-lg w-full max-w-md text-center">
-            <h2 className="text-2xl font-bold mb-2 text-gray-900">Access Required</h2>
-            <p className="text-gray-600 mb-6">Please log in to view your dashboard.</p>
+          <div className="bg-white/40 backdrop-blur-xl border border-white/30 
+                          p-10 rounded-3xl shadow-xl shadow-orange-300/30 text-center w-full max-w-md">
+            <h2 className="text-3xl font-bold text-orange-800 mb-3">Access Required</h2>
+            <p className="text-orange-700 mb-6">
+              Please log in to view your dashboard.
+            </p>
             <button
               onClick={openAuthModal}
-              className="bg-orange-600 text-white py-2 px-6 rounded-lg hover:bg-orange-700"
+              className="px-6 py-3 bg-orange-600 text-white rounded-xl hover:bg-orange-700 shadow-md"
             >
               Login / Register
             </button>
@@ -42,7 +46,7 @@ export default function Dashboard({ openAuthModal }) {
     );
   }
 
-  // Load user's listings
+  // Fetch listings owned by current user
   useEffect(() => {
     const q = query(
       collection(db, "food_listings"),
@@ -52,13 +56,12 @@ export default function Dashboard({ openAuthModal }) {
 
     const unsub = onSnapshot(q, (snap) => {
       const arr = [];
-      let donations = 0,
-        sales = 0,
-        pending = 0;
+      let donations = 0, sales = 0, pending = 0;
 
       snap.forEach((d) => {
         const data = { id: d.id, ...d.data() };
         arr.push(data);
+
         if (data.type === "donation") donations++;
         if (data.type === "sale") sales++;
         if (data.status === "available") pending++;
@@ -71,15 +74,15 @@ export default function Dashboard({ openAuthModal }) {
     return () => unsub();
   }, [user]);
 
-  const markAsClaimed = async (id) => {
+  const markClaimed = async (id) => {
     try {
       await updateDoc(doc(db, "food_listings", id), {
         status: "claimed",
         claimedAt: serverTimestamp(),
       });
-      addToast("Marked as claimed", "success");
+      addToast("Marked as claimed!", "success");
     } catch (err) {
-      addToast("Error updating listing", "error");
+      addToast("Error updating item", "error");
     }
   };
 
@@ -87,88 +90,125 @@ export default function Dashboard({ openAuthModal }) {
     try {
       await addDoc(collection(db, "agri_requests"), {
         listingId: id,
-        status: "requested",
         createdAt: serverTimestamp(),
+        status: "requested",
       });
-      await updateDoc(doc(db, "food_listings", id), { status: "agri_requested" });
-      addToast("Sent to agriculture partners", "success");
+
+      await updateDoc(doc(db, "food_listings", id), {
+        status: "agri_requested",
+      });
+
+      addToast("Sent to agriculture!", "success");
     } catch (err) {
       addToast("Error sending request", "error");
     }
   };
 
   return (
-    <section className="page-section">
+    <section className="page-section relative">
+
+      {/* ORANGE GLASS GRADIENT BACKGROUND */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200" />
+
       <div className="page-container">
 
-        {/* Greeting & Intro */}
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-extrabold text-gray-900">
+        {/* HEADER */}
+        <div className="text-center mb-14">
+          <h2 className="text-5xl font-extrabold text-orange-800 drop-shadow-sm">
             Welcome, {user.displayName || user.email.split("@")[0]}
           </h2>
-          <p className="text-gray-600 mt-2">Manage your posted donations & sales.</p>
+          <p className="text-lg text-orange-700 mt-2">
+            Manage your donations, sales, and food listings.
+          </p>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-          <div className="bg-white p-6 rounded-xl shadow border-b-4 border-green-500 text-center">
-            <p className="text-sm text-gray-600">Donations</p>
-            <p className="text-3xl font-bold">{stats.donations}</p>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow border-b-4 border-blue-500 text-center">
-            <p className="text-sm text-gray-600">Sales</p>
-            <p className="text-3xl font-bold">{stats.sales}</p>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow border-b-4 border-orange-500 text-center">
-            <p className="text-sm text-gray-600">Pending</p>
-            <p className="text-3xl font-bold">{stats.pending}</p>
-          </div>
+        {/* STAT CARDS */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-14">
+          {[
+            { label: "Donations", value: stats.donations, color: "orange" },
+            { label: "Sales", value: stats.sales, color: "blue" },
+            { label: "Pending", value: stats.pending, color: "red" },
+          ].map((item, i) => (
+            <div
+              key={i}
+              className="
+                bg-gradient-to-br from-white/40 to-white/20 
+                backdrop-blur-xl border border-white/30 
+                p-8 rounded-3xl shadow-xl
+                shadow-orange-300/30 text-center hover:scale-[1.03]
+                transition-all
+              "
+            >
+              <p className="text-orange-700 text-sm">{item.label}</p>
+              <p className="text-4xl font-extrabold text-orange-800 mt-2 drop-shadow">
+                {item.value}
+              </p>
+            </div>
+          ))}
         </div>
 
-        {/* Listings */}
-        <h3 className="text-2xl font-bold text-gray-900 mb-6">Your Listings</h3>
+        {/* USER LISTINGS */}
+        <h3 className="text-3xl font-bold text-orange-800 mb-6">Your Listings</h3>
 
         {listings.length === 0 ? (
-          <p className="text-gray-600">You haven't posted any listings yet.</p>
+          <p className="text-orange-700">You haven't posted anything yet.</p>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
             {listings.map((item) => (
-              <div key={item.id} className="bg-white rounded-xl shadow-lg p-5 flex gap-5">
-                <div className="w-28 h-28 rounded-lg overflow-hidden flex-shrink-0">
-                  <img
-                    src={item.image || "https://images.unsplash.com/photo-1528731708534-816fe59f90ca"}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+              <div
+                key={item.id}
+                className="
+                  bg-gradient-to-br from-white/40 to-white/20 
+                  backdrop-blur-xl border border-white/30 
+                  shadow-xl shadow-orange-300/30 
+                  p-6 rounded-3xl flex gap-6
+                  transition hover:scale-[1.02] hover:shadow-orange-400/40
+                "
+              >
+                {/* IMAGE */}
+                <img
+                  src={item.image || "https://images.unsplash.com/photo-1523413651479-597eb2da0ad6"}
+                  className="w-32 h-32 rounded-2xl object-cover shadow-md"
+                />
 
+                {/* CONTENT */}
                 <div className="flex-1">
-                  <h4 className="font-bold text-lg">{item.title}</h4>
-                  <p className="text-sm text-gray-600">{item.type} • {item.category}</p>
-                  {item.notes && <p className="text-sm mt-2 text-gray-700">{item.notes}</p>}
+                  <h4 className="text-xl font-bold text-orange-800">{item.title}</h4>
+                  <p className="text-orange-700 text-sm">
+                    {item.type} • {item.category}
+                  </p>
 
+                  {item.notes && (
+                    <p className="text-orange-700 mt-2 text-sm">{item.notes}</p>
+                  )}
+
+                  {/* ACTION BUTTONS */}
                   <div className="mt-4 flex gap-3 flex-wrap">
+
                     {item.status === "available" ? (
                       <button
-                        onClick={() => markAsClaimed(item.id)}
-                        className="py-2 px-4 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm"
+                        onClick={() => markClaimed(item.id)}
+                        className="px-4 py-2 bg-orange-600 text-white rounded-xl hover:bg-orange-700 
+                                   shadow-md hover:shadow-lg text-sm"
                       >
                         Mark Claimed
                       </button>
                     ) : (
-                      <span className="py-2 px-4 bg-gray-100 rounded-lg text-sm">Status: {item.status}</span>
+                      <span className="px-4 py-2 bg-white/60 text-orange-700 rounded-xl text-sm">
+                        {item.status}
+                      </span>
                     )}
 
                     {item.category === "non-edible" && (
                       <button
                         onClick={() => sendToAgriculture(item.id)}
-                        className="py-2 px-4 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm"
+                        className="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 
+                                   shadow-md hover:shadow-lg text-sm"
                       >
                         Send to Agriculture
                       </button>
                     )}
+
                   </div>
                 </div>
               </div>

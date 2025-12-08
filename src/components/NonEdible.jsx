@@ -4,50 +4,80 @@ export default function NonEdible({ openDonationModal }) {
   return (
     <section className="page-section">
 
+      {/* GREEN GRADIENT BACKGROUND */}
+      <div className="absolute inset-0 -z-10 bg-white" />
+
       <div className="page-container">
 
         {/* HEADER */}
         <div className="text-center mb-14">
-          <h2 className="text-4xl font-extrabold text-gray-900">
+          <h2 className="text-5xl font-extrabold text-emerald-800 drop-shadow-sm">
             Non-Edible Waste Management
           </h2>
-          <p className="text-lg text-gray-600 mt-3">
-            Safely dispose or repurpose non-edible food waste via responsible channels.
+          <p className="text-lg text-emerald-700 mt-3 max-w-2xl mx-auto">
+            Repurpose non-edible waste into valuable resources through modern recycling 
+            and agricultural reuse partnerships.
           </p>
         </div>
 
         {/* ACTION CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
 
           {/* RECYCLING CARD */}
-          <div className="bg-white p-8 rounded-2xl shadow-lg border-t-4 border-emerald-600 text-center hover:shadow-xl transition">
-            <Recycle className="w-12 h-12 text-emerald-600 mx-auto mb-6" />
+          <div
+            className="
+              relative p-10 rounded-3xl shadow-xl 
+              bg-gradient-to-br from-white/40 to-white/20 
+              backdrop-blur-xl border border-white/30 
+              hover:shadow-emerald-400/40 transition-all 
+              hover:scale-[1.02]
+            "
+          >
+            <div className="absolute -top-6 left-6 bg-emerald-500 text-white p-4 rounded-2xl shadow-lg shadow-emerald-600/40">
+              <Recycle className="w-10 h-10" />
+            </div>
 
-            <h3 className="card-heading mb-3">Recycling & Composting</h3>
-            <p className="text-gray-600 mb-6">
-              Convert non-edible waste into compost, fertilizer, or bio-energy.
+            <h3 className="text-2xl font-bold text-emerald-800 mt-6">
+              Recycling & Composting
+            </h3>
+            <p className="text-emerald-700 mt-3">
+              Convert unavoidable non-edible food waste into compost, fertilizer, or bio-energy.
             </p>
 
             <a
               href="/directory"
-              className="bg-emerald-600 text-white py-3 px-8 rounded-lg hover:bg-emerald-700 transition"
+              className="inline-block mt-6 bg-emerald-600 text-white py-3 px-8 rounded-xl 
+                         hover:bg-emerald-700 transition shadow-md hover:shadow-lg"
             >
               Find Recycling Partners
             </a>
           </div>
 
           {/* AGRICULTURE CARD */}
-          <div className="bg-white p-8 rounded-2xl shadow-lg border-t-4 border-emerald-600 text-center hover:shadow-xl transition">
-            <Sprout className="w-12 h-12 text-emerald-600 mx-auto mb-6" />
+          <div
+            className="
+              relative p-10 rounded-3xl shadow-xl 
+              bg-gradient-to-br from-white/40 to-white/20 
+              backdrop-blur-xl border border-white/30 
+              hover:shadow-emerald-400/40 transition-all 
+              hover:scale-[1.02]
+            "
+          >
+            <div className="absolute -top-6 left-6 bg-emerald-500 text-white p-4 rounded-2xl shadow-lg shadow-emerald-600/40">
+              <Sprout className="w-10 h-10" />
+            </div>
 
-            <h3 className="card-heading mb-3">Agriculture Use</h3>
-            <p className="text-gray-600 mb-6">
-              Non-edible food matter can support soil enrichment and farm use.
+            <h3 className="text-2xl font-bold text-emerald-800 mt-6">
+              Agricultural Use
+            </h3>
+            <p className="text-emerald-700 mt-3">
+              Many non-edible food byproducts can support soil health and farm-based sustainability.
             </p>
 
             <button
               onClick={openDonationModal}
-              className="bg-emerald-600 text-white py-3 px-8 rounded-lg hover:bg-emerald-700 transition"
+              className="inline-block mt-6 bg-emerald-600 text-white py-3 px-8 rounded-xl 
+                         hover:bg-emerald-700 transition shadow-md hover:shadow-lg"
             >
               Donate Waste to Farms
             </button>

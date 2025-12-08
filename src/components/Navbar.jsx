@@ -1,64 +1,115 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 
-export default function Navbar({ openAuthModal }) {
+export default function Navbar() {
   const { user, logout } = useAuth();
   const { theme } = useTheme();
+  const location = useLocation();
+
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Auto-switch logo based on theme
+  // Theme-aware logo
   const logo =
     theme === "nonedible"
       ? "https://i.ibb.co/nM20FT5t/Green-Logo.jpg"
       : "https://i.ibb.co/d0NpdWn9/Logo.png";
 
-  // Theme button colors
-  const buttonColor =
+  // Theme-aware Login/Logout button color
+  const buttonClass =
     theme === "nonedible"
-      ? "bg-green-700 hover:bg-green-800"
-      : "bg-orange-600 hover:bg-orange-700";
+      ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-400/40"
+      : "bg-orange-600 hover:bg-orange-700 shadow-orange-400/40";
 
   return (
-    <header className="w-full fixed top-0 left-0 z-50 bg-white shadow-sm">
+    <header className="
+      w-full fixed top-0 left-0 z-50 
+      backdrop-blur-xl bg-white/40 border-b border-white/30
+      shadow-lg shadow-orange-300/20
+    ">
       <nav className="w-full max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
-        {/* LOGO */}
-        <Link to="/" className="flex items-center gap-2">
-          <img src={logo} className="h-12" alt="Replateo Logo" />
-        </Link>
+        {/* LOGO (not a link) */}
+        <div className="flex items-center gap-2">
+          <img src={logo} className="h-12 rounded-lg shadow-md" alt="Replateo Logo" />
+        </div>
 
         {/* DESKTOP MENU */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-8 font-medium">
 
-          <Link to="/edible" className="hover:text-orange-600">Edible</Link>
-          <Link to="/non-edible" className="hover:text-orange-600">Non-Edible</Link>
-          <Link to="/directory" className="hover:text-orange-600">Directory</Link>
-          <Link to="/listings" className="hover:text-orange-600">Listings</Link>
-          <Link to="/contact" className="hover:text-orange-600">Support</Link>
+          {/* HOME Link - as requested */}
+          <Link
+            to="/"
+            className={`hover:text-orange-700 transition ${
+              location.pathname === "/" ? "text-orange-700 font-semibold" : ""
+            }`}
+          >
+            Home
+          </Link>
 
+          <Link
+            to="/edible"
+            className="hover:text-orange-700 transition"
+          >
+            Edible
+          </Link>
+
+          <Link
+            to="/non-edible"
+            className="hover:text-orange-700 transition"
+          >
+            Non-Edible
+          </Link>
+
+          <Link
+            to="/directory"
+            className="hover:text-orange-700 transition"
+          >
+            Directory
+          </Link>
+
+          <Link
+            to="/listings"
+            className="hover:text-orange-700 transition"
+          >
+            Listings
+          </Link>
+
+          <Link
+            to="/contact"
+            className="hover:text-orange-700 transition"
+          >
+            Support
+          </Link>
+
+          {/* DASHBOARD LINK IF LOGGED IN */}
           {user && (
             <Link
               to="/dashboard"
-              className="bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700"
+              className="
+                px-4 py-2 rounded-xl text-white
+                bg-orange-500 hover:bg-orange-600 shadow-md
+                transition
+              "
             >
               Dashboard
             </Link>
           )}
 
+          {/* LOGIN / LOGOUT BUTTON */}
           <button
-            onClick={user ? logout : openAuthModal}
-            className={`py-2 px-4 rounded-lg text-white ${buttonColor}`}
+            onClick={user ? logout : () => (window.location.href = "/auth")}
+            className={`px-4 py-2 rounded-xl text-white shadow-md transition ${buttonClass}`}
           >
-            {user ? "Sign Out" : "Login"}
+            {user ? "Logout" : "Login"}
           </button>
         </div>
 
         {/* MOBILE MENU BUTTON */}
         <button
-          className="md:hidden text-gray-700"
+          className="md:hidden text-orange-800"
           onClick={() => setMobileOpen(!mobileOpen)}
         >
           <Menu className="w-7 h-7" />
@@ -67,8 +118,12 @@ export default function Navbar({ openAuthModal }) {
 
       {/* MOBILE MENU DROPDOWN */}
       {mobileOpen && (
-        <div className="md:hidden bg-white w-full shadow-inner px-6 py-4 space-y-4">
+        <div className="
+          md:hidden bg-white/60 backdrop-blur-xl border-b border-white/30 
+          shadow-lg shadow-orange-300/20 px-6 py-4 space-y-4 font-medium
+        ">
 
+          <Link to="/" onClick={() => setMobileOpen(false)}>Home</Link>
           <Link to="/edible" onClick={() => setMobileOpen(false)}>Edible</Link>
           <Link to="/non-edible" onClick={() => setMobileOpen(false)}>Non-Edible</Link>
           <Link to="/directory" onClick={() => setMobileOpen(false)}>Directory</Link>
@@ -79,21 +134,21 @@ export default function Navbar({ openAuthModal }) {
             <Link
               to="/dashboard"
               onClick={() => setMobileOpen(false)}
-              className="block bg-orange-600 text-white text-center py-2 rounded-lg"
+              className="block bg-orange-600 text-white text-center py-2 rounded-xl"
             >
               Dashboard
             </Link>
           )}
 
           <button
-            className={`block w-full py-2 text-white text-center rounded-lg ${buttonColor}`}
             onClick={() => {
               if (user) logout();
-              else openAuthModal();
+              else window.location.href = "/auth";
               setMobileOpen(false);
             }}
+            className={`w-full py-2 rounded-xl text-white shadow-md ${buttonClass}`}
           >
-            {user ? "Sign Out" : "Login"}
+            {user ? "Logout" : "Login"}
           </button>
 
         </div>

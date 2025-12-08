@@ -4,103 +4,90 @@ export default function Directory() {
   const { addToast } = useToast();
 
   return (
-    <section className="page-section">
+    <section className="page-section relative">
+
+      {/* WHITE BACKGROUND */}
+      <div className="absolute inset-0 -z-10 bg-white" />
+
       <div className="page-container">
 
-        {/* PAGE HEADER */}
+        {/* HEADER */}
         <div className="text-center mb-14">
-          <h2 className="text-4xl font-extrabold text-gray-900">Partner Directory</h2>
-          <p className="text-lg text-gray-600 mt-3">
-            Find trusted NGOs, recyclers, farms, and organizations who accept food waste and surplus.
+          <h2 className="text-5xl font-extrabold text-orange-800 drop-shadow-sm">
+            Recycling & NGO Directory
+          </h2>
+          <p className="text-lg text-orange-700 mt-3 max-w-2xl mx-auto">
+            Connect with trusted recycling partners, NGOs, and agricultural organizations
+            who responsibly manage food waste.
           </p>
         </div>
 
-        {/* PARTNERS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        {/* GRID LAYOUT FIXED FOR 3 CARDS */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12">
 
-          {/* PARTNER CARD 1 */}
-          <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition flex gap-6">
-            <img
-              src="https://images.unsplash.com/photo-1526779259212-94c1d0b5a8d2"
-              alt="NGO"
-              className="w-28 h-28 rounded-lg object-cover flex-shrink-0"
-            />
-            <div className="flex-1">
-              <h3 className="card-heading">Community Food Bank</h3>
-              <p className="text-gray-600 mb-4">
-                Accepts edible surplus food and distributes it to local shelters and orphanages.
-              </p>
-              <button
-                onClick={() => addToast("Contact request sent!", "success")}
-                className="bg-orange-600 text-white py-2 px-6 rounded-lg hover:bg-orange-700"
-              >
-                Contact
-              </button>
-            </div>
-          </div>
+          {/* REUSABLE CARD COMPONENT STYLE */}
+          {[
+            {
+              img: "https://images.unsplash.com/photo-1526779259212-94c1d0b5a8d2",
+              title: "Community Food Bank",
+              text: "Accepts edible surplus food and distributes to shelters & child-care centers.",
+              action: "Contact",
+              toast: "Contact request sent!",
+              color: "orange",
+            },
+            {
+              img: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2",
+              title: "GreenCycle Composters",
+              text: "Transforms non-edible food waste into compost and bio-organic fertilizer.",
+              action: "Request Pickup",
+              toast: "Pickup request created!",
+              color: "emerald",
+            },
+            {
+              img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+              title: "AgroFarm Collective",
+              text: "Works with farmers to recycle food byproducts into soil boosters.",
+              action: "Send Request",
+              toast: "Farm request submitted!",
+              color: "purple",
+            },
+          ].map((p, index) => (
+            <div
+              key={index}
+              className="
+                flex gap-6 p-8 rounded-3xl 
+                bg-gradient-to-br from-white/40 to-white/20 
+                backdrop-blur-xl border border-white/30 
+                shadow-xl shadow-orange-200/30 transition-all
+                hover:scale-[1.02] hover:shadow-orange-300/40
+              "
+            >
+              {/* IMAGE */}
+              <div className="w-28 h-28 flex-shrink-0">
+                <img
+                  src={p.img}
+                  className="w-full h-full rounded-2xl object-cover shadow-md"
+                />
+              </div>
 
-          {/* PARTNER CARD 2 */}
-          <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition flex gap-6">
-            <img
-              src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2"
-              alt="Recycling Partner"
-              className="w-28 h-28 rounded-lg object-cover flex-shrink-0"
-            />
-            <div className="flex-1">
-              <h3 className="card-heading">GreenCycle Composters</h3>
-              <p className="text-gray-600 mb-4">
-                Experts in converting non-edible food waste into compost and organic fertilizers.
-              </p>
-              <button
-                onClick={() => addToast("Pickup request created!", "success")}
-                className="bg-emerald-600 text-white py-2 px-6 rounded-lg hover:bg-emerald-700"
-              >
-                Request Pickup
-              </button>
-            </div>
-          </div>
+              {/* CONTENT */}
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-orange-800">{p.title}</h3>
+                <p className="text-orange-700 mt-3">{p.text}</p>
 
-          {/* PARTNER CARD 3 */}
-          <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition flex gap-6">
-            <img
-              src="https://images.unsplash.com/photo-1523413651479-597eb2da0ad6"
-              alt="Animal Shelter"
-              className="w-28 h-28 rounded-lg object-cover flex-shrink-0"
-            />
-            <div className="flex-1">
-              <h3 className="card-heading">Happy Paws Animal Shelter</h3>
-              <p className="text-gray-600 mb-4">
-                Uses suitable non-edible food waste for animal feed and support.
-              </p>
-              <button
-                onClick={() => addToast("Message sent!", "success")}
-                className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700"
-              >
-                Send Message
-              </button>
+                <button
+                  onClick={() => addToast(p.toast, "success")}
+                  className={`mt-6 py-2 px-6 rounded-xl text-white shadow-md hover:shadow-lg transition
+                    ${p.color === "orange" ? "bg-orange-600 hover:bg-orange-700" : ""}
+                    ${p.color === "emerald" ? "bg-emerald-600 hover:bg-emerald-700" : ""}
+                    ${p.color === "purple" ? "bg-purple-600 hover:bg-purple-700" : ""}
+                  `}
+                >
+                  {p.action}
+                </button>
+              </div>
             </div>
-          </div>
-
-          {/* PARTNER CARD 4 */}
-          <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition flex gap-6">
-            <img
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
-              alt="Farm Partner"
-              className="w-28 h-28 rounded-lg object-cover flex-shrink-0"
-            />
-            <div className="flex-1">
-              <h3 className="card-heading">AgroFarm Collective</h3>
-              <p className="text-gray-600 mb-4">
-                Works with farmers to convert food waste into soil boosters and agricultural inputs.
-              </p>
-              <button
-                onClick={() => addToast("Farm request submitted!", "success")}
-                className="bg-purple-600 text-white py-2 px-6 rounded-lg hover:bg-purple-700"
-              >
-                Send Request
-              </button>
-            </div>
-          </div>
+          ))}
 
         </div>
       </div>

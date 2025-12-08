@@ -1,3 +1,6 @@
+import { signInWithPopup } from "firebase/auth";
+import { googleProvider } from "../firebase";
+
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 
@@ -25,6 +28,9 @@ export function AuthProvider({ children }) {
     });
     return () => unsub();
   }, []);
+  const googleLogin = async () => {
+    return await signInWithPopup(auth, googleProvider);
+  };
 
   // Login
   const login = async (email, password) => {
@@ -55,7 +61,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, authLoading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, googleLogin, authLoading }}>
       {children}
     </AuthContext.Provider>
   );
