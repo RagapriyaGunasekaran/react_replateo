@@ -19,13 +19,13 @@ export default function Dashboard({ openAuthModal }) {
   const { addToast } = useToast();
 
   const [listings, setListings] = useState([]);
-  const [stats, setStats] = useState({ donations: 0, sales: 0, pending: 0 });
+  const [stats, setStats] = useState({ donations: 0, claimed: 0, pending: 0 });
 
   // If user is not logged in
   if (!user) {
     return (
       <section className="page-section relative">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200" />
+        <div className="absolute inset-0 -z-10 bg-white" />
 
         <div className="page-container flex justify-center">
           <div className="bg-white/40 backdrop-blur-xl border border-white/30 
@@ -56,19 +56,21 @@ export default function Dashboard({ openAuthModal }) {
 
     const unsub = onSnapshot(q, (snap) => {
       const arr = [];
-      let donations = 0, sales = 0, pending = 0;
+      let donations = 0,
+        claimed = 0,
+        pending = 0;
 
       snap.forEach((d) => {
         const data = { id: d.id, ...d.data() };
         arr.push(data);
 
         if (data.type === "donation") donations++;
-        if (data.type === "sale") sales++;
+        if (data.status === "claimed") claimed++;
         if (data.status === "available") pending++;
       });
 
       setListings(arr);
-      setStats({ donations, sales, pending });
+      setStats({ donations, claimed, pending });
     });
 
     return () => unsub();
@@ -107,8 +109,8 @@ export default function Dashboard({ openAuthModal }) {
   return (
     <section className="page-section relative">
 
-      {/* ORANGE GLASS GRADIENT BACKGROUND */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200" />
+      {/* WHITE BACKGROUND */}
+      <div className="absolute inset-0 -z-10 bg-white" />
 
       <div className="page-container">
 
@@ -118,15 +120,15 @@ export default function Dashboard({ openAuthModal }) {
             Welcome, {user.displayName || user.email.split("@")[0]}
           </h2>
           <p className="text-lg text-orange-700 mt-2">
-            Manage your donations, sales, and food listings.
+            Manage your donations and track your food listings.
           </p>
         </div>
 
         {/* STAT CARDS */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-14">
-          {[
+          {[ 
             { label: "Donations", value: stats.donations, color: "orange" },
-            { label: "Sales", value: stats.sales, color: "blue" },
+            { label: "Items Claimed", value: stats.claimed, color: "green" },
             { label: "Pending", value: stats.pending, color: "red" },
           ].map((item, i) => (
             <div
@@ -140,7 +142,11 @@ export default function Dashboard({ openAuthModal }) {
               "
             >
               <p className="text-orange-700 text-sm">{item.label}</p>
-              <p className="text-4xl font-extrabold text-orange-800 mt-2 drop-shadow">
+              <p className={`text-4xl font-extrabold mt-2 drop-shadow ${
+                item.color === "orange" ? "text-orange-800" :
+                item.color === "green" ? "text-emerald-700" :
+                "text-red-700"
+              }`}>
                 {item.value}
               </p>
             </div>
@@ -167,7 +173,7 @@ export default function Dashboard({ openAuthModal }) {
               >
                 {/* IMAGE */}
                 <img
-                  src={item.image || "https://images.unsplash.com/photo-1523413651479-597eb2da0ad6"}
+                  src={item.image || "https://i.ibb.co/CyZy0fW/istockphoto-1168659055-612x612.jpg"}
                   className="w-32 h-32 rounded-2xl object-cover shadow-md"
                 />
 

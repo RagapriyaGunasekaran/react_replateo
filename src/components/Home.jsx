@@ -44,19 +44,13 @@ export default function Home() {
 
         {/* RIGHT IMAGE */}
         <div className="flex justify-center md:justify-end">
-          <div
-            className="
-              w-full max-w-lg p-4 rounded-3xl 
-              bg-gradient-to-br from-white to-orange-50/40
-              shadow-lg shadow-orange-200/40 border border-orange-100
-            "
-          >
+          
             <img
-              src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1100&q=80'
+              src='https://t4.ftcdn.net/jpg/15/75/53/27/240_F_1575532744_7Vot5BI8yPPgJnBEKkhfRpRY0a7PXaQZ.jpg'
               className="w-full h-full rounded-2xl object-cover"
               alt="Sustainable food"
             />
-          </div>
+        
         </div>
 
       </div>

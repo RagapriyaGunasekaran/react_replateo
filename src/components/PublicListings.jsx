@@ -21,24 +21,85 @@ export default function PublicListings({ openAuthModal }) {
   const { user } = useAuth();
   const { addToast } = useToast();
 
+  // --------------------------------------------
+  //  DEFAULT INDIAN FOOD LISTINGS (STATIC EXAMPLES)
+  // --------------------------------------------
+  const defaultListings = [
+    {
+      id: "d1",
+      title: "Idly (Fresh & Soft)",
+      type: "donation",
+      category: "edible",
+      notes: "Leftover from a wedding function. Fresh and hygienic.",
+      image: "https://i.ibb.co/7xQcV5Wt/idli-371417-1280.jpg",
+      status: "available",
+      isDefault: true,
+    },
+    {
+      id: "d2",
+      title: "Dosa (Large Quantity)",
+      type: "donation",
+      category: "edible",
+      notes: "Event catering surplus — suitable for NGOs.",
+      image: "https://i.ibb.co/v6Sw3HxB/pexels-saveurssecretes-5560763.jpg",
+      status: "available",
+      isDefault: true,
+    },
+    {
+      id: "d3",
+      title: "Veg Biryani",
+      type: "donation",
+      category: "edible",
+      notes: "Prepared for a temple feast. High quality ingredients.",
+      image: "https://i.ibb.co/rGGxt9vp/istockphoto-179085494-612x612.jpg",
+      status: "available",
+      isDefault: true,
+    },
+    {
+      id: "d4",
+      title: "Steamed Rice (Bulk)",
+      type: "donation",
+      category: "edible",
+      notes: "Excess from hostel mess. Freshly prepared.",
+      image: "https://i.ibb.co/tT8vpM1Q/istockphoto-1062883480-612x612.jpg",
+      status: "available",
+      isDefault: true,
+    },
+  ];
+
+  // --------------------------------------------
+  // FETCH REAL USER LISTINGS FROM FIRESTORE
+  // --------------------------------------------
   useEffect(() => {
     const q = query(collection(db, "food_listings"), orderBy("createdAt", "desc"));
     const unsub = onSnapshot(q, (snap) => {
       const arr = [];
-      snap.forEach((doc) => arr.push({ id: doc.id, ...doc.data() }));
+      snap.forEach((doc) => arr.push({ id: doc.id, ...doc.data(), isDefault: false }));
       setItems(arr);
     });
     return () => unsub();
   }, []);
 
-  const filtered = items.filter((item) => {
+  // Combine default + Firestore listings
+  const combinedListings = [...defaultListings, ...items];
+
+  // Apply filters
+  const filtered = combinedListings.filter((item) => {
     if (typeFilter !== "all" && item.type !== typeFilter) return false;
     if (categoryFilter !== "all" && item.category !== categoryFilter) return false;
     return true;
   });
 
-  const claimItem = async (id) => {
+  // --------------------------------------------
+  // ACTION HANDLERS
+  // --------------------------------------------
+  const claimItem = async (id, isDefault) => {
+    if (isDefault) {
+      return addToast("Default demo items cannot be claimed.", "error");
+    }
+
     if (!user) return openAuthModal();
+
     try {
       await updateDoc(doc(db, "food_listings", id), {
         status: "claimed",
@@ -51,26 +112,36 @@ export default function PublicListings({ openAuthModal }) {
     }
   };
 
-  const requestAgriculture = async (id) => {
+  const requestAgriculture = async (id, isDefault) => {
+    if (isDefault) {
+      return addToast("This example item cannot be used for agriculture.", "error");
+    }
+
     try {
       await addDoc(collection(db, "agri_requests"), {
         listingId: id,
         createdAt: serverTimestamp(),
         status: "requested",
       });
+
       await updateDoc(doc(db, "food_listings", id), {
         status: "agri_requested",
       });
+
       addToast("Sent to agriculture partners!", "success");
     } catch (err) {
       addToast("Error sending request", "error");
     }
   };
 
+  // --------------------------------------------
+  // RENDER UI
+  // --------------------------------------------
+
   return (
     <section className="page-section relative">
 
-      {/* ORANGE GRADIENT BACKGROUND */}
+      {/* WHITE BACKGROUND */}
       <div className="absolute inset-0 -z-10 bg-white" />
 
       <div className="page-container">
@@ -81,11 +152,11 @@ export default function PublicListings({ openAuthModal }) {
             Public Listings
           </h2>
           <p className="text-lg text-orange-700 mt-3 max-w-2xl mx-auto">
-            Browse all available community donations and discounted food listings.
+            Browse available community donations and real-time food surplus listings.
           </p>
         </div>
 
-        {/* FILTER BAR (Glass UI) */}
+        {/* FILTER BAR */}
         <div
           className="
             flex flex-wrap gap-4 justify-center p-5 mb-12 rounded-3xl
@@ -100,7 +171,6 @@ export default function PublicListings({ openAuthModal }) {
           >
             <option value="all">All Types</option>
             <option value="donation">Donations</option>
-            <option value="sale">Sales</option>
           </select>
 
           <select
@@ -117,18 +187,9 @@ export default function PublicListings({ openAuthModal }) {
         {/* LISTING GRID */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12">
 
-          {filtered.length === 0 && (
-            <p className="text-orange-700 text-center w-full">No listings found.</p>
-          )}
-
           {filtered.map((item) => {
             const borderColor =
               item.category === "non-edible" ? "border-emerald-500" : "border-orange-500";
-
-            const fallbackImage =
-              item.category === "non-edible"
-                ? "https://images.unsplash.com/photo-1542838132-92c53300491e"
-                : "https://images.unsplash.com/photo-1504674900247-0877df9cc836";
 
             return (
               <div
@@ -142,7 +203,7 @@ export default function PublicListings({ openAuthModal }) {
               >
                 {/* IMAGE */}
                 <img
-                  src={item.image || fallbackImage}
+                  src={item.image}
                   alt=""
                   className="w-full h-44 object-cover"
                 />
@@ -163,7 +224,7 @@ export default function PublicListings({ openAuthModal }) {
 
                     {item.status === "available" ? (
                       <button
-                        onClick={() => claimItem(item.id)}
+                        onClick={() => claimItem(item.id, item.isDefault)}
                         className="py-2 px-4 bg-orange-600 text-white rounded-xl hover:bg-orange-700
                                    shadow-md hover:shadow-lg text-sm transition"
                       >
@@ -177,7 +238,7 @@ export default function PublicListings({ openAuthModal }) {
 
                     {item.category === "non-edible" && (
                       <button
-                        onClick={() => requestAgriculture(item.id)}
+                        onClick={() => requestAgriculture(item.id, item.isDefault)}
                         className="py-2 px-4 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700
                                    shadow-md hover:shadow-lg text-sm transition"
                       >

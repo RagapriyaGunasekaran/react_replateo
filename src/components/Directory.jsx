@@ -49,7 +49,7 @@ export default function Directory() {
               text: "Works with farmers to recycle food byproducts into soil boosters.",
               action: "Send Request",
               toast: "Farm request submitted!",
-              color: "purple",
+              color: "emerald",
             },
           ].map((p, index) => (
             <div
